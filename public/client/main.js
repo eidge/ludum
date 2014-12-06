@@ -9,7 +9,7 @@ var world = new World();
 var player = new Player();
 
 // MAIN LOOP
-var socket = io.connect('http://localhost:3000');
+var socket = io();
 
 socket.on('set_id', function(id){
   player.id = id;
