@@ -5,11 +5,17 @@
 
   <title>Ludum Dare is Here</title>
 
-  <script src="https://cdn.firebase.com/js/client/2.0.6/firebase.js"></script>
-  <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+
+  <!--
   <script type="text/javascript" charset="utf-8" src="game/main.js"></script>
 
   <link type="text/css" rel="stylesheet" href="assets/stylesheets/main.css"></link>
+  -->
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:3000');;
+  </script>
 </head>
 
 <body>
