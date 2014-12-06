@@ -13,6 +13,11 @@
   <link type="text/css" rel="stylesheet" href="/assets/stylesheets/main.css"></link>
 
   <style type="text/css" media="all">
+    body html {
+      height: 100%;
+      width: 100%;
+    }
+
     #ship {
       position: absolute;
 
@@ -23,6 +28,8 @@
       height: 20px;
 
       background-color: black;
+
+      -webkit-transform: translate3d(0, 0, 0);
     }
   </style>
 
@@ -50,10 +57,11 @@
 
       $('#ship').css('left', pos.x);
       $('#ship').css('top', pos.y);
-
-      if((sum %= 5) == 0)
-        socket.io.emitAll('player_moved', pos);
     }, 1000/100);
+
+    setInterval(function(){
+      socket.io.emitAll('player_moved', pos);
+    }, 1000/15);
   </script>
 </head>
 
