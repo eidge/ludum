@@ -4,34 +4,33 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var express = require('express');
+var world = require('./world.js');
 
-var world = {};
-
-var _pos = {x: 0, y:0};
-
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('./public'));
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
 });
 
 io.on('connection', function(socket){
-  console.log('A user connected');
+  var player_id = world.addPlayer();
 
-  socket.on('player_moved', function(pos) {
-    _pos = pos;
-    return pos;
+  socket.emit('set_id', player_id);
+  socket.on('player_moved', function(player) {
+    if(!player.id) return;
+    world.players[player_id] = player;
+    return world;
   })
-
   socket.on('disconnect', function(){
-    console.log('A user went fuck himself.');
+    delete world.players[player_id]
+    console.log('Player left, id: ' + player_id);
   });
-
 });
 
   setInterval(function() {
-    io.sockets.emit('update_world', _pos);
-  }, 1000);
+    io.sockets.emit('update_world', world);
+    console.log(JSON.stringify(world)); //FIXME
+  }, 1000/2);
 
 
 http.listen(3000, function(){

@@ -18,7 +18,7 @@
       width: 100%;
     }
 
-    #ship {
+    .ship {
       position: absolute;
 
       top: 0;
@@ -37,41 +37,66 @@
   <script type="text/javascript" charset="utf-8">
     'use strict'
 
-    var socket = io.connect('http://localhost:3000');
-
-    var pos = { x: 0, y: 0 }
-
     var speed_x = 3;
     var speed_y = 3;
+
+    // WORLD FILE
+    var world = function() {};
+    world.prototype.draw = function() {
+      $.each(world.players, function(key, player) {
+        player_ship = $('#' + key);
+        if(!player_ship.length) {
+          player_ship = $('<div id="' + key + ' class="ship""></div>');
+        }
+      });
+    };
+
+    // PLAYER FILE
+    var player ={
+      id: 0,
+      pos: { x: 0, y: 0, t: 0}
+    };
+
+    // MAIN LOOP
+    var socket = io.connect('http://localhost:3000');
+
+    socket.on('set_id', function(id){
+      player.id = id;
+      console.log('Player id: ' + player.id);
+    });
 
     var sum = 0;
 
     setInterval(function() {
-      if (pos.x >= $('body').width() || pos.x < 0)
+      if (player.pos.x >= $('body').width() || player.pos.x < 0)
           speed_x *= -1;
-      if (pos.y >= $('body').height() || pos.y < 0)
+      if (player.pos.y >= $('body').height() || player.pos.y < 0)
           speed_y *= -1;
 
-      pos.x += speed_x;
-      pos.y += speed_y;
+      player.pos.x += speed_x;
+      player.pos.y += speed_y;
 
-      $('#ship').css('left', pos.x);
-      $('#ship').css('top', pos.y);
+      $('#ship').css('left', player.pos.x);
+      $('#ship').css('top', player.pos.y);
     }, 1000/100);
 
     setInterval(function(){
-      //socket.io.emitAll('player_moved', pos);
+      socket.io.emitAll('player_moved', player);
     }, 1000/15);
 
-    socket.on('update_world', function(_pos){
-      pos = _pos;
+    socket.on('update_world', function(_world){
+      delete _world.players['' + player.id];
+      $.each(_world, function(key, value){
+        world[key] = value;
+      });
+      console.log(world.players); //FIXME
     });
   </script>
 </head>
 
 <body>
   <h1>Hi there</h1>
-  <div id="ship"></div>
+  <div id="ship" class="ship"></div>
   <div id="world">
   </div>
 </body>
