@@ -7,98 +7,21 @@
 
 
   <script src="/socket.io/socket.io.js"></script>
-  <script type="text/javascript" charset="utf-8" src="/client/main.js"></script>
   <script type="text/javascript" charset="utf-8" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
+
   <link type="text/css" rel="stylesheet" href="/assets/stylesheets/main.css"></link>
-
-  <style type="text/css" media="all">
-    body html {
-      height: 100%;
-      width: 100%;
-    }
-
-    .ship {
-      position: absolute;
-
-      top: 0;
-      left: 0;
-
-      width: 20px;
-      height: 20px;
-
-      background-color: black;
-
-      -webkit-transform: translate3d(0, 0, 0);
-    }
-  </style>
-
-
-  <script type="text/javascript" charset="utf-8">
-    'use strict'
-
-    var speed_x = 3;
-    var speed_y = 3;
-
-    // WORLD FILE
-    var world = function() {};
-    world.prototype.draw = function() {
-      $.each(world.players, function(key, player) {
-        player_ship = $('#' + key);
-        if(!player_ship.length) {
-          player_ship = $('<div id="' + key + ' class="ship""></div>');
-        }
-      });
-    };
-
-    // PLAYER FILE
-    var player ={
-      id: 0,
-      pos: { x: 0, y: 0, t: 0}
-    };
-
-    // MAIN LOOP
-    var socket = io.connect('http://localhost:3000');
-
-    socket.on('set_id', function(id){
-      player.id = id;
-      console.log('Player id: ' + player.id);
-    });
-
-    var sum = 0;
-
-    setInterval(function() {
-      if (player.pos.x >= $('body').width() || player.pos.x < 0)
-          speed_x *= -1;
-      if (player.pos.y >= $('body').height() || player.pos.y < 0)
-          speed_y *= -1;
-
-      player.pos.x += speed_x;
-      player.pos.y += speed_y;
-
-      $('#ship').css('left', player.pos.x);
-      $('#ship').css('top', player.pos.y);
-    }, 1000/100);
-
-    setInterval(function(){
-      socket.io.emitAll('player_moved', player);
-    }, 1000/15);
-
-    socket.on('update_world', function(_world){
-      delete _world.players['' + player.id];
-      $.each(_world, function(key, value){
-        world[key] = value;
-      });
-      console.log(world.players); //FIXME
-    });
-  </script>
 </head>
 
 <body>
   <h1>Hi there</h1>
-  <div id="ship" class="ship"></div>
   <div id="world">
+    <div id="ship" class="ship"></div>
   </div>
+
+  <script type="text/javascript" charset="utf-8" src="/client/player.js"></script>
+  <script type="text/javascript" charset="utf-8" src="/client/world.js"></script>
+  <script type="text/javascript" charset="utf-8" src="/client/main.js"></script>
 </body>
 
 </html>

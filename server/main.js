@@ -6,7 +6,9 @@ var io = require('socket.io')(http);
 var express = require('express');
 var world = require('./world.js');
 
-app.use(express.static('./public'));
+app.frameRate = 30;
+
+app.use(express.static('./public/'));
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
@@ -30,7 +32,7 @@ io.on('connection', function(socket){
   setInterval(function() {
     io.sockets.emit('update_world', world);
     console.log(JSON.stringify(world)); //FIXME
-  }, 1000/2);
+  }, 1000/app.frameRate);
 
 
 http.listen(3000, function(){
