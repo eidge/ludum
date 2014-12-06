@@ -26,7 +26,7 @@ io.on('connection', function(socket){
   });
 
   setInterval(function() {
-    socket.broadcast('update_world', _pos);
+    socket.broadcast.emit('update_world', _pos);
   }, 1000/20);
 });
 
