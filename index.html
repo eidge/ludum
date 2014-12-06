@@ -6,19 +6,56 @@
   <title>Ludum Dare is Here</title>
 
 
-  <!--
-  <script type="text/javascript" charset="utf-8" src="game/main.js"></script>
-
-  <link type="text/css" rel="stylesheet" href="assets/stylesheets/main.css"></link>
-  -->
-
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    var socket = io.connect('http://localhost:3000');;
+  <script type="text/javascript" charset="utf-8" src="/client/main.js"></script>
+  <script type="text/javascript" charset="utf-8" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="/assets/stylesheets/main.css"></link>
+
+  <style type="text/css" media="all">
+    #ship {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 20px;
+      height: 20px;
+
+      background-color: black;
+    }
+  </style>
+
+
+  <script type="text/javascript" charset="utf-8">
+    'use strict'
+
+    var socket = io.connect('http://localhost:3000');
+
+    var pos = { x: 0, y: 0 }
+
+    var speed_x = 1;
+    var speed_y = 1;
+
+    setInterval(function() {
+      if (pos.x >= $('body').width() || pos.x < 0)
+          speed_x *= -1;
+      if (pos.y >= $('body').height() || pos.y < 0)
+          speed_y *= -1;
+
+      pos.x += speed_x;
+      pos.y += speed_y;
+
+      $('#ship').css('left', pos.x);
+      $('#ship').css('top', pos.y);
+
+      socket.io.emitAll('player_moved', pos);
+    }, 1000/30);
   </script>
 </head>
 
 <body>
+  <h1>Hi there</h1>
   <div id="ship"></div>
 </body>
 
