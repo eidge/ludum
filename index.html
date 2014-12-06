@@ -60,8 +60,12 @@
     }, 1000/100);
 
     setInterval(function(){
-      socket.io.emitAll('player_moved', pos);
+      //socket.io.emitAll('player_moved', pos);
     }, 1000/15);
+
+    socket.on('update_world', function(_pos){
+      pos = _pos;
+    });
   </script>
 </head>
 
